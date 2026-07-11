@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Studentification: a playable investigation of why housing has become so expensive in Oxford, Mississippi." />
+  <title>Priced Out — a Studentification game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" aria-label="Primary navigation">
+    <button class="brand" data-screen-target="landing" aria-label="Return to Studentification home">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <span class="brand-text"><strong>Studentification</strong><small>Oxford Housing Lab</small></span>
+    </button>
+    <nav class="header-actions" aria-label="Utility navigation">
+      <button class="text-button" data-panel-open="research">Evidence</button>
+      <button class="text-button" data-panel-open="notebook">Notebook <span id="note-count" class="count-pill">0</span></button>
+      <button class="icon-button" id="motion-toggle" aria-pressed="false" title="Reduce motion">◌</button>
+      <button class="icon-button" id="contrast-toggle" aria-pressed="false" title="High contrast">◐</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============ LANDING ============ -->
+    <section id="screen-landing" class="screen is-active" aria-labelledby="landing-title">
+      <div class="hero">
+        <video id="hero-video" class="hero-video" autoplay muted loop playsinline
+               poster="assets/backgrounds/city-background.png"
+               aria-hidden="true">
+          <source src="assets/video/cityscape-loop.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-scrim" aria-hidden="true"></div>
+
+        <div class="hero-content">
+          <p class="eyebrow"><span>An educational city-builder</span><span class="dot">·</span><span>Oxford, Mississippi</span></p>
+          <h1 id="landing-title">PRICED <em>OUT</em></h1>
+          <p class="dek">Why has housing become so expensive in a small college town? Step into the planner's chair — zone, invest, and test policy against real local evidence — and find out who benefits, who pays, and who has to move.</p>
+          <div class="landing-actions">
+            <button class="primary-button" data-screen-target="modes">Choose a scenario <span aria-hidden="true">→</span></button>
+            <button class="ghost-button" data-panel-open="research">Explore the evidence</button>
+          </div>
+          <div class="hero-stats" aria-label="Key local housing statistics, each linked to its source">
+            <a href="https://oxfordeagle.com/2026/01/29/grad-students-struggle-to-find-affordable-housing/" target="_blank" rel="noopener"><strong>$2,236</strong><span>reported average rent, Sept. 2025 — up from $1,500 in 2022</span><small>The Oxford Eagle ↗</small></a>
+            <a href="https://oxfordeagle.com/2026/02/17/report-points-to-limited-affordable-housing-high-turnover/" target="_blank" rel="noopener"><strong>45%</strong><span>of surveyed residents were frequent movers; 58% cited affordability</span><small>Oxford Eagle / UM Housing Insecurity Lab ↗</small></a>
+            <a href="https://thedmonline.com/asb-runs-the-numbers-on-student-housing-insecurity/" target="_blank" rel="noopener"><strong>24.5%</strong><span>of 731 students reported experiencing housing insecurity</span><small>The Daily Mississippian / ASB ↗</small></a>
+          </div>
+          <div class="learning-loop" aria-label="Learning process">
+            <span>Build</span><i></i><span>Test</span><i></i><span>Investigate</span><i></i><span>Reflect</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MODE SELECT ============ -->
+    <section id="screen-modes" class="screen" aria-labelledby="modes-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Select a scenario</p>
+          <h2 id="modes-title">Different starting points.<br>Different tradeoffs.</h2>
+        </div>
+        <p>No mode has one perfect answer. Your goal is to explain who benefits, who bears the costs, and what evidence shaped your decisions.</p>
+      </div>
+      <div class="mode-grid">
+        <button class="mode-card" data-start-mode="ground">
+          <img src="assets/cards/build_from_scratch_card.png" alt="" loading="lazy" />
+          <span class="visually-hidden">Build from Scratch — start with open land and a limited budget. Play this mode.</span>
+        </button>
+        <button class="mode-card" data-start-mode="chaos">
+          <img src="assets/cards/fix_the_chaotic_city_card.png" alt="" loading="lazy" />
+          <span class="visually-hidden">Fix the Chaotic City — repair an expensive, fragmented city without displacement. Play this mode.</span>
+        </button>
+        <button class="mode-card" data-start-mode="shock">
+          <img src="assets/cards/enrollment_shock_card.png" alt="" loading="lazy" />
+          <span class="visually-hidden">Enrollment Shock — absorb waves of new student demand. Play this mode.</span>
+        </button>
+        <button class="mode-card" data-start-mode="council">
+          <img src="assets/cards/council_table_card.png" alt="" loading="lazy" />
+          <span class="visually-hidden">Council Table — pass a balanced, evidence-backed plan in ten turns. Play this mode.</span>
+        </button>
+      </div>
+      <p class="mode-footnote">Each scenario uses the same simplified city model. The numbers are illustrative, not forecasts — the reflection you export is the real assignment.</p>
+    </section>
+
+    <!-- ============ GAME ============ -->
+    <section id="screen-game" class="screen game-screen" aria-labelledby="game-title">
+      <div class="game-topbar">
+        <div>
+          <p class="eyebrow" id="mode-label">Scenario</p>
+          <h2 id="game-title">Oxford Housing Simulation</h2>
+        </div>
+        <div class="turn-counter"><span>Year</span><strong id="year-value">1</strong><small id="turn-value">Turn 0</small></div>
+        <div class="topbar-buttons">
+          <button class="ghost-button compact" id="end-scenario">End scenario</button>
+          <button class="ghost-button compact" data-screen-target="modes">Change mode</button>
+        </div>
+      </div>
+
+      <div class="metric-strip" aria-label="City performance indicators">
+        <article><span>Affordability</span><strong id="metric-affordability">42</strong><meter id="meter-affordability" min="0" max="100" low="40" high="65" optimum="90" value="42">42</meter></article>
+        <article><span>Housing supply</span><strong id="metric-supply">28</strong><meter id="meter-supply" min="0" max="100" low="35" high="70" optimum="90" value="28">28</meter></article>
+        <article><span>Displacement risk</span><strong id="metric-displacement">64</strong><meter id="meter-displacement" min="0" max="100" low="25" high="55" optimum="5" value="64">64</meter></article>
+        <article><span>Commute burden</span><strong id="metric-commute">58</strong><meter id="meter-commute" min="0" max="100" low="30" high="60" optimum="5" value="58">58</meter></article>
+        <article class="budget-metric"><span>Public budget</span><strong>$<b id="metric-budget">200</b>m</strong><small id="goal-status">Build a balanced city</small></article>
+      </div>
+
+      <div class="game-layout">
+        <aside class="build-palette" aria-labelledby="build-title">
+          <div class="panel-heading"><p class="eyebrow">Zoning &amp; policy</p><h3 id="build-title">Build tools</h3></div>
+          <div class="tool-list" role="toolbar" aria-label="City building tools">
+            <button class="tool is-selected" data-tool="mixed" aria-pressed="true"><span class="tool-icon" data-color="mixed">▥</span><span><strong>Mixed-income homes</strong><small>$35m · broad affordability</small></span></button>
+            <button class="tool" data-tool="student" aria-pressed="false"><span class="tool-icon" data-color="student">▦</span><span><strong>Student apartments</strong><small>$30m · rapid bed supply</small></span></button>
+            <button class="tool" data-tool="workforce" aria-pressed="false"><span class="tool-icon" data-color="workforce">⌂</span><span><strong>Workforce housing</strong><small>$40m · stability boost</small></span></button>
+            <button class="tool" data-tool="transit" aria-pressed="false"><span class="tool-icon" data-color="transit">⇄</span><span><strong>Transit link</strong><small>$15m · lowers commute burden</small></span></button>
+            <button class="tool" data-tool="energy" aria-pressed="false"><span class="tool-icon" data-color="energy">☀</span><span><strong>Efficient homes</strong><small>$28m · lower monthly costs</small></span></button>
+            <button class="tool" data-tool="tenant" aria-pressed="false"><span class="tool-icon" data-color="tenant">⚖</span><span><strong>Tenant advocacy</strong><small>$20m · citywide protection</small></span></button>
+            <button class="tool" data-tool="park" aria-pressed="false"><span class="tool-icon" data-color="park">♧</span><span><strong>Public space</strong><small>$12m · quality of life</small></span></button>
+            <button class="tool destructive" data-tool="clear" aria-pressed="false"><span class="tool-icon">×</span><span><strong>Clear parcel</strong><small>$5m · may displace residents</small></span></button>
+          </div>
+          <button id="undo-button" class="ghost-button full" disabled>Undo last move</button>
+        </aside>
+
+        <section class="city-stage" aria-label="Playable city map">
+          <div class="canvas-wrap">
+            <canvas id="city-canvas" width="1000" height="640" aria-label="Interactive isometric city grid. Select a build tool, then click a parcel." tabindex="0"></canvas>
+            <div class="canvas-help"><span>Click a parcel to build</span><span>Keyboard: arrows move · Enter builds</span></div>
+            <div class="selected-tile" id="selected-tile" aria-live="polite">Parcel 5, 5 · vacant</div>
+          </div>
+          <div class="event-feed" aria-live="polite">
+            <span class="live-dot" aria-hidden="true"></span>
+            <p id="event-message"><strong>Planning desk:</strong> Choose a tool and make your first move.</p>
+            <button id="open-checkpoint" class="text-button">Open learning checkpoint</button>
+          </div>
+        </section>
+
+        <aside class="decision-panel" aria-labelledby="decision-title">
+          <div class="panel-heading"><p class="eyebrow">Make the reasoning visible</p><h3 id="decision-title">Decision log</h3></div>
+          <label for="decision-note">Why did you make your latest move?</label>
+          <textarea id="decision-note" rows="4" placeholder="I chose mixed-income housing because…"></textarea>
+          <button id="save-decision" class="primary-button full">Save decision</button>
+          <div class="evidence-slot">
+            <div><span>Evidence attached</span><strong id="evidence-count">0 sources</strong></div>
+            <button class="ghost-button compact" data-panel-open="research">Find evidence</button>
+          </div>
+          <div class="objective-card">
+            <span>Scenario objective</span>
+            <p id="objective-text">Raise affordability above 65 while keeping displacement risk below 40.</p>
+          </div>
+          <button class="survey-launch" data-panel-open="survey"><span aria-hidden="true">▤</span><span><strong>Fieldwork activity</strong><small>Survey peers about housing needs</small></span><b>→</b></button>
+          <button class="survey-launch" data-panel-open="notebook"><span aria-hidden="true">✎</span><span><strong>Reflection studio</strong><small>Build your visual submission</small></span><b>→</b></button>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ DRAWERS ============ -->
+  <aside id="panel-research" class="drawer" aria-labelledby="research-title" aria-hidden="true">
+    <div class="drawer-header">
+      <div><p class="eyebrow">Evidence library</p><h2 id="research-title">Why is housing so expensive?</h2></div>
+      <button class="drawer-close" aria-label="Close evidence library">×</button>
+    </div>
+    <div class="source-filters" role="group" aria-label="Filter evidence">
+      <button class="filter-chip is-active" data-source-filter="all">All</button>
+      <button class="filter-chip" data-source-filter="demand">Demand</button>
+      <button class="filter-chip" data-source-filter="policy">Policy</button>
+      <button class="filter-chip" data-source-filter="experience">Lived experience</button>
+      <button class="filter-chip" data-source-filter="solutions">Solutions</button>
+    </div>
+    <div id="source-list" class="source-list"></div>
+  </aside>
+
+  <aside id="panel-survey" class="drawer wide-drawer" aria-labelledby="survey-title" aria-hidden="true">
+    <div class="drawer-header">
+      <div><p class="eyebrow">Activity template</p><h2 id="survey-title">Housing needs pulse survey</h2></div>
+      <button class="drawer-close" aria-label="Close survey activity">×</button>
+    </div>
+    <div class="activity-intro">
+      <div><strong>Purpose</strong><p>Gather a small, anonymous snapshot of how peers experience cost, stability, commute, and the Oxford leasing cycle.</p></div>
+      <div><strong>Ethics</strong><p>Do not collect names, addresses, landlord names, immigration status, or other identifying details. Participation should be voluntary.</p></div>
+    </div>
+    <form id="survey-form" class="survey-form">
+      <label>Housing arrangement
+        <select name="arrangement" required>
+          <option value="">Choose one</option><option>On-campus residence</option><option>Off-campus with roommates</option><option>Off-campus alone</option><option>With family</option><option>Commute from another town</option><option>Other / prefer not to say</option>
+        </select>
+      </label>
+      <label>Approximate monthly housing cost
+        <select name="cost" required>
+          <option value="">Choose one</option><option>Under $500</option><option>$500–$749</option><option>$750–$999</option><option>$1,000–$1,499</option><option>$1,500 or more</option><option>Unsure / prefer not to say</option>
+        </select>
+      </label>
+      <label>Housing cost feels…
+        <select name="burden" required>
+          <option value="">Choose one</option><option>Comfortable</option><option>Manageable but difficult</option><option>Seriously burdensome</option><option>Unsustainable</option>
+        </select>
+      </label>
+      <fieldset><legend>Which issues have affected you? <small>Select all that apply</small></legend>
+        <label><input type="checkbox" name="issues" value="Rent increases" /> Rent increases</label>
+        <label><input type="checkbox" name="issues" value="Leasing-season gap" /> Leasing-season gap</label>
+        <label><input type="checkbox" name="issues" value="Roommate pressure" /> Roommate pressure</label>
+        <label><input type="checkbox" name="issues" value="Long commute" /> Long commute</label>
+        <label><input type="checkbox" name="issues" value="Maintenance or safety" /> Maintenance or safety</label>
+        <label><input type="checkbox" name="issues" value="Lack of accessible units" /> Lack of accessible units</label>
+      </fieldset>
+      <label>What one change would most improve housing in Oxford?
+        <textarea name="change" rows="4" maxlength="400" required></textarea>
+      </label>
+      <button class="primary-button" type="submit">Add anonymous response</button>
+    </form>
+    <section class="survey-results" aria-labelledby="survey-results-title">
+      <div class="panel-heading"><p class="eyebrow">Current session</p><h3 id="survey-results-title">Survey snapshot</h3></div>
+      <p id="survey-empty">No responses have been added yet.</p>
+      <div id="survey-chart" class="bar-chart" aria-live="polite"></div>
+    </section>
+  </aside>
+
+  <aside id="panel-notebook" class="drawer wide-drawer" aria-labelledby="notebook-title" aria-hidden="true">
+    <div class="drawer-header">
+      <div><p class="eyebrow">Reflection studio</p><h2 id="notebook-title">Build your city argument</h2></div>
+      <button class="drawer-close" aria-label="Close reflection studio">×</button>
+    </div>
+    <div class="notebook-grid">
+      <section>
+        <label for="reflection-problem"><span>1</span> What forces made housing less affordable in your scenario?</label>
+        <textarea id="reflection-problem" rows="5" placeholder="Identify at least three interacting causes…"></textarea>
+      </section>
+      <section>
+        <label for="reflection-tradeoff"><span>2</span> Describe one tradeoff your plan could not avoid.</label>
+        <textarea id="reflection-tradeoff" rows="5" placeholder="Who benefited? Who carried risk or cost? …"></textarea>
+      </section>
+      <section>
+        <label for="reflection-evidence"><span>3</span> Which evidence most changed your decisions?</label>
+        <textarea id="reflection-evidence" rows="5" placeholder="Connect a source or survey finding to a move in the city…"></textarea>
+      </section>
+      <section>
+        <label for="reflection-next"><span>4</span> What should the city, county, and university do next?</label>
+        <textarea id="reflection-next" rows="5" placeholder="Propose a coordinated next step…"></textarea>
+      </section>
+    </div>
+    <div class="saved-evidence">
+      <div class="panel-heading"><p class="eyebrow">Evidence basket</p><h3>Saved sources &amp; decisions</h3></div>
+      <div id="notebook-items" class="notebook-items"><p class="empty-state">Your saved evidence and decision notes will appear here.</p></div>
+    </div>
+    <div class="export-bar">
+      <div><strong>Visual submission</strong><span>Includes city metrics, map, evidence, survey snapshot, and reflections.</span></div>
+      <button id="export-html" class="primary-button">HTML</button>
+      <button id="export-pdf" class="ghost-button">PDF</button>
+      <button id="export-print" class="ghost-button">Print</button>
+    </div>
+  </aside>
+
+  <!-- ============ MODALS ============ -->
+  <div id="checkpoint-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkpoint-title">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close learning checkpoint">×</button>
+      <p class="eyebrow">Pause before the next turn</p>
+      <h2 id="checkpoint-title">Evidence checkpoint</h2>
+      <div id="checkpoint-content"></div>
+      <label for="checkpoint-response">How does this evidence complicate your current strategy?</label>
+      <textarea id="checkpoint-response" rows="4"></textarea>
+      <button id="save-checkpoint" class="primary-button full">Save reflection &amp; continue</button>
+    </div>
+  </div>
+
+  <div id="summary-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="summary-title">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close scenario summary">×</button>
+      <p class="eyebrow" id="summary-eyebrow">Scenario debrief</p>
+      <h2 id="summary-title">How did your city do?</h2>
+      <div id="summary-content"></div>
+      <div class="summary-actions">
+        <button class="primary-button" data-panel-open="notebook">Write your reflection</button>
+        <button class="ghost-button" data-screen-target="modes">Try another scenario</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <footer class="site-footer">
+    <p><strong>Studentification</strong> is a teaching prototype. The city model is simplified and illustrative — the numbers are not forecasts. Local reporting linked in the evidence library remains the property of its publishers.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
